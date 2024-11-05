@@ -512,6 +512,41 @@ like this::
         return $dumper->dump($cloner->cloneVar($var));
     });
 
+The ``dq()`` Function
+--------------------
+
+When working with database queries, you can use the ``dq()`` function to dump a
+query builder instance with all parameter bindings interpolated into the SQL string.
+This is particularly useful for debugging complex queries:
+
+.. code-block:: php
+
+    use Doctrine\ORM\QueryBuilder;
+    // ... your query builder setup
+    $qb = $entityManager->createQueryBuilder()
+        ->select('u')
+        ->from('App\Entity\User', 'u')
+        ->where('u.active = :active')
+        ->setParameter('active', true);
+
+    dq($qb); // This will dump the complete SQL with parameters and exit
+
+The ``dq()`` function will:
+
+* Show the complete SQL query with all parameters replaced
+* Set a 500 HTTP status code (in web requests)
+* Exit the script after dumping (similar to ``dd()``)
+
+.. versionadded:: 7.1
+    The ``dq()`` function was introduced in Symfony 7.1.
+
+.. note::
+
+    The ``dq()`` function works with any object that implements the ``toSql()`` and
+    ``getBindings()`` methods, making it compatible with Laravel's Query Builder,
+    Doctrine's QueryBuilder (with some adapters), and similar implementations.
+
+
 Cloners
 ~~~~~~~
 
